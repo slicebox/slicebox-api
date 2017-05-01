@@ -161,7 +161,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: ID of import session
+          description: ID of session
           required: true
           type: integer
           format: int64
@@ -179,7 +179,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: ID of import session
+          description: ID of import session to delete
           required: true
           type: integer
           format: int64
@@ -194,7 +194,7 @@ paths:
       parameters:
         - name: id
           in: path
-          description: ID of import session
+          description: ID of session
           required: true
           type: integer
           format: int64
@@ -2388,6 +2388,23 @@ paths:
       responses:
         '204':
           description: series type removed
+  /seriestypes/series/query:
+    post:
+      description: submit a query for seriestypes for a list of series
+      tags:
+        - Meta Data
+      parameters:
+        - name: query
+          in: body
+          description: parameters of series query
+          required: true
+          schema:
+            $ref: '#/definitions/idsquery'
+      responses:
+        '200':
+          description: series
+          schema:
+            $ref: '#/definitions/seriesidseriestypesresult'
   /seriestypes/rules:
     get:
       description: >-
@@ -2466,7 +2483,7 @@ paths:
         - name: id
           in: path
           required: true
-          description: ID of series type rule to list rule attributes for
+          description: index of series type rule to list rule attributes for
           type: integer
           format: int64
       responses:
@@ -2485,8 +2502,8 @@ paths:
       parameters:
         - name: id
           in: path
+          description: ID of rule
           required: true
-          description: ID of series type
           type: integer
           format: int64
         - name: SeriesTypeRuleAttribute
@@ -3158,6 +3175,31 @@ definitions:
           $ref: '#/definitions/queryProperty'
       filters:
         $ref: '#/definitions/queryFilters'
+  idsquery:
+    type: object
+    required:
+      - ids
+    properties:
+      ids:
+        type: array
+        items:
+          type: integer
+          format: int64
+  seriesidseriestypesresult:
+    type: object
+    properties:
+      seriesidseriestypes:
+        type: array
+        items:
+          $ref: '#/definitions/seriesidseriestype'
+  seriesidseriestype:
+    type: object
+    properties:
+      seriesid:
+        type: integer
+        format: int64
+      seriestype:
+        $ref: '#/definitions/seriestype'
   user:
     type: object
     required:
