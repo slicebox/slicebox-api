@@ -2589,6 +2589,7 @@ paths:
           description: forwarding rule removed
 definitions:
   importSession:
+    type: object
     properties:
       id:
         type: integer
@@ -2616,6 +2617,7 @@ definitions:
         type: integer
         format: int64
   userInfo:
+    type: object
     properties:
       id:
         type: integer
@@ -2625,12 +2627,14 @@ definitions:
       role:
         type: string
   userPass:
+    type: object
     properties:
       user:
         type: string
       pass:
         type: string
   forwardingrule:
+    type: object
     properties:
       id:
         type: integer
@@ -2642,6 +2646,7 @@ definitions:
       keepImages:
         type: boolean
   seriestype:
+    type: object
     properties:
       id:
         type: integer
@@ -2649,6 +2654,7 @@ definitions:
       name:
         type: string
   seriestyperule:
+    type: object
     properties:
       id:
         type: integer
@@ -2657,6 +2663,7 @@ definitions:
         type: integer
         format: int64
   seriestyperuleattribute:
+    type: object
     required:
       - id
       - seriesTypeRuleId
@@ -2681,11 +2688,13 @@ definitions:
       value:
         type: string
   exportSetId:
+    type: object
     properties:
       value:
         type: integer
         format: int64
   source:
+    type: object
     properties:
       sourceType:
         type: string
@@ -2695,6 +2704,7 @@ definitions:
         type: integer
         format: int64
   sourceRef:
+    type: object
     properties:
       sourceType:
         type: string
@@ -2702,6 +2712,7 @@ definitions:
         type: integer
         format: int64
   destination:
+    type: object
     properties:
       destinationType:
         type: string
@@ -2711,6 +2722,7 @@ definitions:
         type: integer
         format: int64
   seriestag:
+    type: object
     properties:
       id:
         type: integer
@@ -2718,6 +2730,7 @@ definitions:
       name:
         type: string
   anonymizationKey:
+    type: object
     properties:
       id:
         type: integer
@@ -2758,6 +2771,7 @@ definitions:
       anonFrameOfReferenceUID:
         type: string
   anonymizationKeyQuery:
+    type: object
     required:
       - startIndex
       - count
@@ -2776,6 +2790,7 @@ definitions:
         items:
           $ref: '#/definitions/queryProperty'
   scu:
+    type: object
     properties:
       id:
         type: integer
@@ -2790,6 +2805,7 @@ definitions:
         type: integer
         format: int32
   scp:
+    type: object
     properties:
       id:
         type: integer
@@ -2802,6 +2818,7 @@ definitions:
         type: integer
         format: int32
   watchedDirectory:
+    type: object
     properties:
       id:
         type: integer
@@ -2809,6 +2826,7 @@ definitions:
       path:
         type: string
   outgoingTransaction:
+    type: object
     properties:
       id:
         type: integer
@@ -2830,6 +2848,7 @@ definitions:
       status:
         type: string
   outgoingImage:
+    type: object
     properties:
       id:
         type: integer
@@ -2846,18 +2865,21 @@ definitions:
       sent:
         type: boolean
   outgoingTransactionImage:
+    type: object
     properties:
       transaction:
         $ref: '#/definitions/outgoingTransaction'
       image:
         $ref: '#/definitions/outgoingImage'
   failedOutgoingTransactionImage:
+    type: object
     properties:
       transactionImage:
         $ref: '#/definitions/outgoingTransactionImage'
       message:
         type: string
   incomingTransaction:
+    type: object
     properties:
       id:
         type: integer
@@ -2882,6 +2904,7 @@ definitions:
       status:
         type: string
   tagValue:
+    type: object
     properties:
       tag:
         type: integer
@@ -2889,6 +2912,7 @@ definitions:
       value:
         type: string
   imageTagValues:
+    type: object
     properties:
       imageId:
         type: integer
@@ -2898,16 +2922,19 @@ definitions:
         items:
           $ref: '#/definitions/tagValue'
   remoteBox:
+    type: object
     properties:
       name:
         type: string
       baseUrl:
         type: string
   remoteBoxName:
+    type: object
     properties:
       value:
         type: string
   box:
+    type: object
     properties:
       id:
         type: integer
@@ -2923,10 +2950,12 @@ definitions:
       online:
         type: boolean
   dicomPropertyValue:
+    type: object
     properties:
       value:
         type: string
   patient:
+    type: object
     properties:
       id:
         type: integer
@@ -2940,6 +2969,7 @@ definitions:
       patientSex:
         $ref: '#/definitions/dicomPropertyValue'
   study:
+    type: object
     properties:
       id:
         type: integer
@@ -2960,6 +2990,7 @@ definitions:
       patientAge:
         $ref: '#/definitions/dicomPropertyValue'
   series:
+    type: object
     properties:
       id:
         type: integer
@@ -2986,6 +3017,7 @@ definitions:
       bodyPartExamined:
         $ref: '#/definitions/dicomPropertyValue'
   equipment:
+    type: object
     properties:
       id:
         type: integer
@@ -2995,6 +3027,7 @@ definitions:
       stationName:
         $ref: '#/definitions/dicomPropertyValue'
   frameOfReference:
+    type: object
     properties:
       id:
         type: integer
@@ -3002,6 +3035,7 @@ definitions:
       frameOfReferenceUID:
         $ref: '#/definitions/dicomPropertyValue'
   image:
+    type: object
     properties:
       id:
         type: integer
@@ -3016,6 +3050,7 @@ definitions:
       instanceNumber:
         $ref: '#/definitions/dicomPropertyValue'
   flatSeries:
+    type: object
     properties:
       id:
         type: integer
@@ -3031,6 +3066,7 @@ definitions:
       series:
         $ref: '#/definitions/series'
   imageAttribute:
+    type: object
     properties:
       group:
         type: string
@@ -3054,6 +3090,7 @@ definitions:
       value:
         type: string
   imageInformation:
+    type: object
     properties:
       numberOfFrames:
         type: integer
@@ -3068,6 +3105,7 @@ definitions:
         type: integer
         format: int32
   queryProperty:
+    type: object
     properties:
       propertyName:
         type: string
@@ -3076,12 +3114,14 @@ definitions:
       propertyValue:
         type: string
   queryOrder:
+    type: object
     properties:
       orderBy:
         type: string
       orderAscending:
         type: boolean
   queryFilters:
+    type: object
     properties:
       sourceRefs:
         type: array
@@ -3098,6 +3138,7 @@ definitions:
           type: integer
           format: int64
   query:
+    type: object
     required:
       - startIndex
       - count
@@ -3118,6 +3159,7 @@ definitions:
       filters:
         $ref: '#/definitions/queryFilters'
   user:
+    type: object
     required:
       - id
       - user
@@ -3133,6 +3175,7 @@ definitions:
       hashedPassword:
         type: string
   newUser:
+    type: object
     properties:
       user:
         type: string
@@ -3141,6 +3184,7 @@ definitions:
       password:
         type: string
   logEntry:
+    type: object
     properties:
       id:
         type: integer
