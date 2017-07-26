@@ -1228,6 +1228,8 @@ paths:
           description: image data
         '404':
           description: if no image was found for the supplied image ID
+        '501':
+          description: if the system is not capable of creating an image representation of the data
   '/images/{id}/anonymize':
     put:
       description: delete the selected image and replace it with an anonymized version
