@@ -3017,12 +3017,6 @@ definitions:
       studyId:
         type: integer
         format: int64
-      equipmentId:
-        type: integer
-        format: int64
-      frameOfReferenceId:
-        type: integer
-        format: int64
       seriesInstanceUID:
         $ref: '#/definitions/dicomPropertyValue'
       seriesDescription:
@@ -3035,22 +3029,10 @@ definitions:
         $ref: '#/definitions/dicomPropertyValue'
       bodyPartExamined:
         $ref: '#/definitions/dicomPropertyValue'
-  equipment:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int64
       manufacturer:
         $ref: '#/definitions/dicomPropertyValue'
       stationName:
         $ref: '#/definitions/dicomPropertyValue'
-  frameOfReference:
-    type: object
-    properties:
-      id:
-        type: integer
-        format: int64
       frameOfReferenceUID:
         $ref: '#/definitions/dicomPropertyValue'
   image:
@@ -3078,10 +3060,6 @@ definitions:
         $ref: '#/definitions/patient'
       study:
         $ref: '#/definitions/study'
-      equipment:
-        $ref: '#/definitions/equipment'
-      frameOfReference:
-        $ref: '#/definitions/frameOfReference'
       series:
         $ref: '#/definitions/series'
   imageAttribute:
