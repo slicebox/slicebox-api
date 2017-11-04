@@ -1230,6 +1230,30 @@ paths:
           description: if no image was found for the supplied image ID
         '501':
           description: if the system is not capable of creating an image representation of the data
+  '/images/{id}/modify':
+    put:
+      description: >-
+        modify and/or insert image attributes according to the input tagpath-value mappings
+      tags:
+        - Images
+      parameters:
+        - name: id
+          in: path
+          description: ID of image to modify
+          required: true
+          type: integer
+          format: int64
+        - name: tag path value mappings
+          in: body
+          description: specification of tag paths and corresponding values to insert or modify
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/tagMapping'
+      responses:
+        '201':
+          description: image attributes successfully modified
   '/images/{id}/anonymize':
     put:
       description: delete the selected image and replace it with an anonymized version
@@ -1620,6 +1644,13 @@ paths:
             type: array
             items:
               $ref: '#/definitions/logEntry'
+    delete:
+      description: delete all log messages
+      tags:
+        - Logs
+      responses:
+        '204':
+          description: log messages successfully
   '/log/{id}':
     delete:
       description: Delete the log entry with the supplied ID
@@ -2940,6 +2971,31 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/tagValue'
+  tagPathSequence:
+    type: object
+    properties:
+      tag:
+        type: integer
+        format: int32
+      item:
+        type: string
+      previous:
+        $ref: '#/definitions/tagPathSequence'
+  tagPathTag:
+    type: object
+    properties:
+      tag: 
+        type: integer
+        format: int32
+      previous:
+        $ref: '#/definitions/tagPathSequence'
+  tagMapping:
+    type: object
+    properties:
+      tagPath:
+        $ref: '#/definitions/tagPathTag'
+      value:
+        type: string
   remoteBox:
     type: object
     properties:
