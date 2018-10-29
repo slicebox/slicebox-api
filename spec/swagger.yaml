@@ -44,6 +44,9 @@ tags:
     description: >-
       Methods for handling forwarding rules for automatically forwarding image
       data from sources to destinations.
+  - name: Filtering
+    description: >-
+      Methods for handling filtering of DICOM attributes on incoming objects.
   - name: Series Types
     description: Methods for defining and handling series types
   - name: Logs
@@ -2343,6 +2346,141 @@ paths:
           description: Series not found or SCU not found
         '502':
           description: Receiving SCP host not available
+  /filtering/filters:
+    get:
+      description: >-
+        List defined filters
+      tags:
+        - Filtering
+      parameters:
+        - name: startindex
+          in: query
+          description: start index of returned slice of filters
+          required: false
+          default: 0
+          type: integer
+          format: int64
+        - name: count
+          in: query
+          description: size of returned slice of filters
+          required: false
+          default: 20
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: the list of filters
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/filter'
+    post:
+      description: >-
+        Inserts or updates a filter. If a filter with same name as supplied filter exists this filter is
+        updated, otherwise a new filter is inserted.
+      tags:
+        - Filtering
+      parameters:
+        - name: filterspec
+          description: Filter specification
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/filter'
+      responses:
+        '204':
+          description: Filter upserted
+  '/filtering/filters/{id}':
+    get:
+      description: >-
+        Get a specific filter
+      tags:
+        - Filtering
+      parameters:
+        - name: id
+          in: path
+          description: id of the filter
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: the filter
+          schema:
+            $ref: '#/definitions/filter'
+    delete:
+      description: remove the filter corresponding to the supplied ID
+      tags:
+        - Filtering
+      parameters:
+        - name: id
+          description: id of filter to remove
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: Filter removed
+  /filtering/associations:
+    get:
+      description: >-
+        Get a list of source to filter associations.
+      tags:
+        - Filtering
+      parameters:
+        - name: startindex
+          in: query
+          description: start index of returned slice of source <-> filter associations
+          required: false
+          default: 0
+          type: integer
+          format: int64
+        - name: count
+          in: query
+          description: size of returned slice of source <-> filter associations
+          required: false
+          default: 20
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: the list of source <-> filter associations
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/sourceTagFilter'
+    post:
+      description: >-
+        Inserts or updates a source <-> filter associations. If the specified Source already 
+        has an association this is updated, otherwise a new is inserted.
+      tags:
+        - Filtering
+      parameters:
+        - name: sourcetagfilter
+          description: Source to Filter association
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/sourceTagFilter'
+      responses:
+        '204':
+          description: Upserted source <-> filter association
+  '/filtering/associations/{id}':
+    delete:
+      description: remove the source <-> filter association corresponding to the supplied ID
+      tags:
+        - Filtering
+      parameters:
+        - name: id
+          description: id of source <-> filter association to remove
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: source <-> filter association removed
   /seriestypes:
     get:
       description: >-
@@ -2695,6 +2833,34 @@ definitions:
         $ref: '#/definitions/destination'
       keepImages:
         type: boolean
+  filter:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+      tagFilterType:
+        type: string
+      tags:
+        type: array
+        items:
+          $ref: '#/definitions/tagPathTag'
+  sourceTagFilter:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      sourceType:
+        type: string
+      sourceId:
+        type: integer
+        format: int64
+      tagFilterId:
+        type: integer
+        format: int64
   seriestype:
     type: object
     properties:
