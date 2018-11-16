@@ -2381,33 +2381,16 @@ paths:
       tags:
         - Filtering
       parameters:
-        - name: filterspec
-          description: Filter specification
+        - name: tagFilter
+          description: Filter
           in: body
           required: true
           schema:
             $ref: '#/definitions/filter'
       responses:
-        '204':
+        '201':
           description: Filter upserted
   '/filtering/filters/{id}':
-    get:
-      description: >-
-        Get a specific filter
-      tags:
-        - Filtering
-      parameters:
-        - name: id
-          in: path
-          description: id of the filter
-          required: true
-          type: integer
-          format: int64
-      responses:
-        '200':
-          description: the filter
-          schema:
-            $ref: '#/definitions/filter'
     delete:
       description: remove the filter corresponding to the supplied ID
       tags:
@@ -2422,6 +2405,66 @@ paths:
       responses:
         '204':
           description: Filter removed
+  '/filtering/filters/{id}/tagpaths':
+    get:
+      description: List tagpaths for the selected filter
+      tags:
+        - Filtering
+      parameters:
+        - name: id
+          description: id of filter
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: the list of tagpaths
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/tagPathTag'
+    post:
+      description: add a tagpath to a filter
+      tags:
+        - Filtering
+      parameters:
+        - name: id
+          description: id of filter to remove
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: tagpath
+          description: id of filter to remove
+          in: body
+          required: true
+          schema:
+            $ref: '#/definitions/tagPathTag'
+      responses:
+        '201':
+          description: TagPath added
+  '/filtering/filters/{id}/tagpaths/{tagpathid}':
+    delete:
+      description: remove the tagpath corresponding to the supplied ID
+      tags:
+        - Filtering
+      parameters:
+        - name: id
+          description: id of filter
+          in: path
+          required: true
+          type: integer
+          format: int64
+        - name: tagpathid
+          description: id of TagPath to remove
+          in: path
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '204':
+          description: TagPath removed
   /filtering/associations:
     get:
       description: >-
@@ -2464,7 +2507,7 @@ paths:
           schema:
             $ref: '#/definitions/sourceTagFilter'
       responses:
-        '204':
+        '201':
           description: Upserted source <-> filter association
   '/filtering/associations/{id}':
     delete:
