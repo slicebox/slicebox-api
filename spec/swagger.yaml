@@ -2670,7 +2670,7 @@ paths:
         - Series Types
       responses:
         '200':
-          description: 'a status message, either idle or running.'
+          description: 'a status message, indicating if an update is running'
           schema:
             $ref: '#/definitions/seriestypeupdatestatus'
   '/seriestypes/rules/{id}':
@@ -2953,7 +2953,8 @@ definitions:
     required:
       - running
     properties:
-      running: boolean
+      running:
+        type: boolean
   exportSetId:
     type: object
     properties:
