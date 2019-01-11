@@ -1,6 +1,6 @@
 swagger: '2.0'
 info:
-  version: '1.2'
+  version: '2.0'
   title: Slicebox API
   description: Slicebox - safe sharing of medical images
   contact:
@@ -1275,9 +1275,7 @@ paths:
           description: specification of values for anonymous DICOM attributes
           required: true
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/tagValue'
+            $ref: '#/definitions/anonymizationData'
       responses:
         '200':
           description: the newly created anonymous image
@@ -1303,9 +1301,7 @@ paths:
           description: specification of values for anonymous DICOM attributes
           required: true
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/tagValue'
+            $ref: '#/definitions/anonymizationData'
       responses:
         '200':
           description: binary data of anonymized dataset
@@ -1460,7 +1456,7 @@ paths:
       responses:
         '204':
           description: anonymization key deleted
-  '/anonymization/keys/{id}/images':
+  '/anonymization/keys/{id}/keyvalues':
     get:
       description: >-
         get pointers to the images corresponding to the anonymization key with
@@ -1477,12 +1473,11 @@ paths:
       responses:
         '200':
           description: >-
-            an array of pointers each containing an image ID corresponding to
-            the anonymization key for the supplied ID
+            an array of anonymization key-value pairs corresponding to the anonymization key for the supplied ID
           schema:
             type: array
             items:
-              $ref: '#/definitions/image'
+              $ref: '#/definitions/anonymizationKeyValue'
         '404':
           description: if no anonymization key could be found for the supplied ID
   /anonymization/keys/query:
@@ -1504,6 +1499,28 @@ paths:
             type: array
             items:
               $ref: '#/definitions/anonymizationKey'
+  /anonymization/options:
+    get:
+      description: list all supported anonymization options defining an anonymization profile
+      tags:
+        - Anonymization
+      responses:
+        '200':
+          description: supported anonymization options
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/confidentialityOption'
+  /anonymization/keys/export/csv:
+    get:
+      description: export all anonymization keys as a csv file
+      tags:
+        - Anonymization
+      responses:
+        '200':
+          description:  all anonymization keys as a csv file
+          schema:
+            type: string
   /users/login:
     post:
       description: >-
@@ -1704,12 +1721,12 @@ paths:
       tags:
         - Boxes
       parameters:
-        - name: remoteBoxName
+        - name: remoteBoxConnectionData
           in: body
           description: name of box to connect (and send URL) to
           required: true
           schema:
-            $ref: '#/definitions/remoteBoxName'
+            $ref: '#/definitions/remoteBoxConnectionData'
       responses:
         '201':
           description: remote box of the connection
@@ -1770,9 +1787,7 @@ paths:
             values to use in anonymized datasets
           required: true
           schema:
-            type: array
-            items:
-              $ref: '#/definitions/imageTagValues'
+            $ref: '#/definitions/bulkAnonymizationData'
       responses:
         '201':
           description: images sent
@@ -2031,7 +2046,9 @@ paths:
         '200':
           description: next outgoing transaction and image information block
           schema:
-            $ref: '#/definitions/outgoingTransactionImage'
+            type: array
+            items:
+              $ref: '#/definitions/outgoingTransactionImage'
         '401':
           description: 'unauthorized, invalid token'
         '404':
@@ -2670,7 +2687,9 @@ paths:
         - Series Types
       responses:
         '200':
-          description: 'a status message, either idle or running.'
+          description: 'a status message, indicating if an update is running'
+          schema:
+            $ref: '#/definitions/seriestypeupdatestatus'
   '/seriestypes/rules/{id}':
     delete:
       description: remove the series type rule corresponding to the supplied ID
@@ -2946,6 +2965,13 @@ definitions:
         type: string
       value:
         type: string
+  seriestypeupdatestatus:
+    type: object
+    required:
+      - running
+    properties:
+      running:
+        type: boolean
   exportSetId:
     type: object
     properties:
@@ -2997,6 +3023,9 @@ definitions:
       created:
         type: integer
         format: int64
+      imageId:
+        type: integer
+        format: int64
       patientName:
         type: string
       anonPatientName:
@@ -3005,29 +3034,32 @@ definitions:
         type: string
       anonPatientID:
         type: string
-      patientBirthDate:
-        type: string
       studyInstanceUID:
         type: string
       anonStudyInstanceUID:
-        type: string
-      studyDescription:
-        type: string
-      studyID:
-        type: string
-      accessionNumber:
         type: string
       seriesInstanceUID:
         type: string
       anonSeriesInstanceUID:
         type: string
-      seriesDescription:
+      sopInstanceUID:
         type: string
-      protocolName:
+      anonSOPInstanceUID:
         type: string
-      frameOfReferenceUID:
+  anonymizationKeyValue:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      anonymizationKeyId:
+        type: integer
+        format: int64
+      tagPath:
+        $ref: '#/definitions/tagPathTag'
+      value:
         type: string
-      anonFrameOfReferenceUID:
+      anonymizedValue:
         type: string
   anonymizationKeyQuery:
     type: object
@@ -3095,6 +3127,8 @@ definitions:
         format: int64
       boxName:
         type: string
+      profile:
+        $ref: '#/definitions/anonymizationProfile'
       sentImageCount:
         type: integer
         format: int64
@@ -3165,9 +3199,8 @@ definitions:
   tagValue:
     type: object
     properties:
-      tag:
-        type: integer
-        format: int32
+      tagPath:
+        $ref: '#/definitions/tagPathTag'
       value:
         type: string
   imageTagValues:
@@ -3180,7 +3213,7 @@ definitions:
         type: array
         items:
           $ref: '#/definitions/tagValue'
-  tagPathSequence:
+  tagPathTrunk:
     type: object
     properties:
       tag:
@@ -3189,7 +3222,7 @@ definitions:
       item:
         type: string
       previous:
-        $ref: '#/definitions/tagPathSequence'
+        $ref: '#/definitions/tagPathTrunk'
   tagPathTag:
     type: object
     properties:
@@ -3197,7 +3230,7 @@ definitions:
         type: integer
         format: int32
       previous:
-        $ref: '#/definitions/tagPathSequence'
+        $ref: '#/definitions/tagPathTrunk'
   tagMapping:
     type: object
     properties:
@@ -3205,6 +3238,25 @@ definitions:
         $ref: '#/definitions/tagPathTag'
       value:
         type: string
+  confidentialityOption:
+    type: object
+    properties:
+      name: 
+        type: string
+      title: 
+        type: string
+      description:
+        type: string
+      rank:
+        type: integer
+        format: int32
+  anonymizationProfile:
+    type: object
+    properties:
+      options:
+        type: array
+        items:
+          $ref: '#/definitions/confidentialityOption'
   remoteBox:
     type: object
     properties:
@@ -3212,11 +3264,33 @@ definitions:
         type: string
       baseUrl:
         type: string
-  remoteBoxName:
+      defaultProfile:
+        $ref: '#/definitions/anonymizationProfile'
+  remoteBoxConnectionData:
     type: object
     properties:
-      value:
+      name:
         type: string
+      defaultProfile:
+        $ref: '#/definitions/anonymizationProfile'
+  anonymizationData:
+    type: object
+    properties:              
+      profile:
+        $ref: '#/definitions/anonymizationProfile'
+      tagValues:
+        type: array
+        items:
+          $ref: '#/definitions/tagValue'
+  bulkAnonymizationData:
+    type: object
+    properties:
+      profile:
+        $ref: '#/definitions/anonymizationProfile'
+      imageTagValuesSet:
+        type: array
+        items:
+          $ref: '#/definitions/imageTagValues'
   box:
     type: object
     properties:
@@ -3231,6 +3305,8 @@ definitions:
         type: string
       sendMethod:
         type: string
+      profile:
+        $ref: '#/definitions/anonymizationProfile'        
       online:
         type: boolean
   dicomPropertyValue:
